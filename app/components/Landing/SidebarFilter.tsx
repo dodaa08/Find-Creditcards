@@ -46,7 +46,7 @@ const SidebarFilter = ({
   const { theme } = useTheme();
   const isDark = theme === "dark";
   return (
-    <aside className={`w-72 max-w-full bg-white dark:bg-neutral-900 border-r border-neutral-200 dark:border-neutral-800 h-full p-6 flex flex-col gap-6 shadow-lg z-40 transition-colors duration-300 ${isDark ? 'bg-neutral-900 text-white' : 'bg-white text-black'}`}>
+    <aside className={`w-72 max-w-full  border-r border-neutral-200 dark:border-neutral-800 h-full p-6 flex flex-col gap-6 shadow-lg z-40 transition-colors duration-300 ${isDark ? 'bg-neutral-900 text-white' : 'bg-white text-black'}`}>
       <div className="flex justify-between items-center mb-4">
         {/* <h2 className="text-xl font-semibold">Filters</h2> */}
         {onClose && (
@@ -63,7 +63,7 @@ const SidebarFilter = ({
           placeholder="Search cards..."
           value={search}
           onChange={e => onSearchChange(e.target.value)}
-          className="w-full px-3 py-2 rounded border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-sm text-black dark:text-white focus:outline-none  transition-colors duration-300"
+          className={`w-full px-3 py-2 rounded    text-sm  focus:outline-none  transition-colors duration-300 ${isDark ? 'bg-neutral-900 text-white border border-neutral-700' : 'bg-white text-black border border-neutral-300'}`}
         />
       </div>
       {/* Bank Filter */}

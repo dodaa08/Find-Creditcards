@@ -102,13 +102,13 @@ export default function LandingPage() {
             <div className="flex flex-row">
                 {/* Sidebar: visible on md+, overlay on mobile */}
                 <div className={`hidden md:flex flex-col transition-all duration-300 ${sidebarCollapsed ? 'w-20' : 'w-72'} max-w-full`}>
-                            <h1 className='text-xl font-semibold flex items-center gap-2 mt-4 ml-2'>Filters</h1>
-                    <div className="flex items-center justify-between p-4 border-b border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900">
+                    <div className={`flex items-center justify-between p-4  ${isDark ? 'bg-neutral-900 border-b border-neutral-900' : 'bg-white  border-b border-neutral-200'}`}>
                         
-                        <button onClick={() => setSidebarCollapsed(!sidebarCollapsed)} className="p-2 rounded dark:hover:bg-neutral-800 items-center gap-2 cursor-pointer">
+                        <button onClick={() => setSidebarCollapsed(!sidebarCollapsed)} className={`p-2 rounded  items-center gap-2 cursor-pointer  ${isDark ? 'bg-neutral-900 border-2 border-neutral-900 dark:border-neutral-800' : 'bg-white border-2 border-neutral-200'}`}>
                             {sidebarCollapsed ? <> <FiChevronRight size={24} /> </> : <FiChevronLeft size={24} />}
                         </button>
                     </div>
+                            <h1 className='text-xl font-semibold flex items-center gap-2 mt-4 ml-4'>Filters</h1>
                     <div className={`${sidebarCollapsed ? 'hidden' : 'block'}`}> 
                         <SidebarFilter
                             search={search}
