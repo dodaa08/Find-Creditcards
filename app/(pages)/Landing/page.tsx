@@ -23,6 +23,11 @@ export default function LandingPage() {
     const [selectedFeatures, setSelectedFeatures] = useState<string[]>([]);
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
+    // Gemini AI integration state
+    const [isLoading, setIsLoading] = useState(false);
+    const [resultMessage, setResultMessage] = useState("");
+    const [aiCardResult, setAiCardResult] = useState<CreditCard | null>(null);
+
     // Handlers
     const handleBankChange = (bank: string) => {
         setSelectedBanks(prev => prev.includes(bank) ? prev.filter(b => b !== bank) : [...prev, bank]);
@@ -88,6 +93,32 @@ export default function LandingPage() {
         return matchesSearch && matchesBank && matchesType && matchesFee && matchesSalary && matchesFeature && matchesCategory;
     });
 
+    // Handler for AI query
+    async function handleQuerySubmit(query: string) {
+        setIsLoading(true);
+        setResultMessage("");
+        setAiCardResult(null);
+        try {
+            const response = await fetch("/api/gemini", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ query })
+            });
+            const data = await response.json();
+            if (data.cardName) {
+                const found = creditCardsData.find(card => card.name === data.cardName);
+                setAiCardResult(found || null);
+                setResultMessage(data.message);
+            } else {
+                setResultMessage(data.message);
+            }
+        } catch (e) {
+            setResultMessage("There was an error contacting Gemini. Please try again.");
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
     useEffect(() => setMounted(true), []);  
     if (!mounted) return null;
     return (
@@ -108,7 +139,7 @@ export default function LandingPage() {
                             {sidebarCollapsed ? <> <FiChevronRight size={24} /> </> : <FiChevronLeft size={24} />}
                         </button>
                     </div>
-                            <h1 className='text-xl font-semibold flex items-center gap-2 mt-4 ml-4'>Filters</h1>
+                            <h1 className='text-lg font-semibold flex items-center gap-2 mt-4 ml-4'>Filters</h1>
                     <div className={`${sidebarCollapsed ? 'hidden' : 'block'}`}> 
                         <SidebarFilter
                             search={search}
@@ -152,12 +183,31 @@ export default function LandingPage() {
                 )}
                 {/* Main content */}
                 <div className="flex-1">
-                    <HeroSection />
-                    <CreditCardList cards={filteredCards.slice(0, 6)} />
-                    {filteredCards.length > 6 && (
-                        <div className="w-full max-w-5xl mx-auto text-center text-sm text-neutral-500 pb-8">
-                            +{filteredCards.length - 6} more cards
+                    <HeroSection onQuerySubmit={handleQuerySubmit} isLoading={isLoading} resultMessage={resultMessage} />
+                    {isLoading ? null : aiCardResult ? (
+                        <div className="w-full max-w-5xl mx-auto mb-4">
+                            <div className="rounded-lg p-4 mb-2 text-blue-900 dark:text-blue-100 font-semibold flex items-center justify-between">
+                                <span className={`text-lg ${isDark ? 'text-white' : 'text-black'}`}>AI Recommendation:</span>
+                                <button
+                                    className="ml-4 px-3 py-2 rounded bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-200 text-xs font-semibold hover:bg-red-200 dark:hover:bg-red-800 transition cursor-pointer text-2xl"
+                                    onClick={() => { setAiCardResult(null); setResultMessage(""); }}
+                                >
+                                    Clear Response
+                                </button>
+                            </div>
+                            <div className="mb-4">
+                                <CreditCardList cards={[aiCardResult]} />
+                            </div>
                         </div>
+                    ) : (
+                        <>
+                            <CreditCardList cards={filteredCards.slice(0, 6)} />
+                            {filteredCards.length > 6 && (
+                                <div className="w-full max-w-5xl mx-auto text-center text-sm text-neutral-500 pb-8">
+                                    +{filteredCards.length - 6} more cards
+                                </div>
+                            )}
+                        </>
                     )}
                 </div>
             </div>

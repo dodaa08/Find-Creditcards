@@ -6,6 +6,37 @@ import { useTheme } from "next-themes";
 export default function CreditCardCard({ card }: { card: CreditCard }) {
   const { theme } = useTheme();
   const isDark = theme === "dark";
+  const [showModal, setShowModal] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
+  const [summary, setSummary] = React.useState("");
+
+  const handleViewDetails = async () => {
+    setShowModal(true);
+    setLoading(true);
+    setError(null);
+    setSummary("");
+    try {
+      const response = await fetch("/api/card-summary", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ cardId: card.id }),
+      });
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+      console.log("Summary response:", data);
+      setSummary(data.summary);
+    } catch (e) {
+      setError("An error occurred while fetching the summary.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="relative  w-full max-w-xs aspect-[16/10] rounded-2xl shadow-xl overflow-auto h-64 border border-neutral-200 dark:border-neutral-800 mx-auto " style={{ background: isDark ? card.color :  card.color }}>
       {/* Glass overlay */}
@@ -35,12 +66,36 @@ export default function CreditCardCard({ card }: { card: CreditCard }) {
           <span>{card.loungeAccess ? 'Lounge Access' : ''}</span>
         </div>
         <div className="flex items-center justify-between bottom-0 text-xs text-white/80">
-             <button className="bg-white text-black px-4 py-2 rounded-md cursor-pointer mb-2">
+             <button className="bg-white text-black px-4 py-2 rounded-md cursor-pointer mb-2" onClick={handleViewDetails}>
                 View Details
              </button>
              <button className="bg-white text-black px-4 py-2 rounded-md cursor-pointer mb-2">Visit Bank</button>
         </div>
       </div>
+      {/* Modal for AI summary */}
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="bg-white dark:bg-neutral-900 rounded-lg shadow-xl max-w-lg w-full p-6 relative max-h-[80vh] overflow-y-auto">
+            <button
+              className="absolute top-2 right-2 text-2xl text-neutral-500 hover:text-neutral-800 dark:hover:text-white"
+              onClick={() => setShowModal(false)}
+              aria-label="Close"
+            >
+              &times;
+            </button>
+            <h2 className="text-xl font-bold mb-4">{card.name} Summary</h2>
+            {loading ? (
+              <div className="flex items-center justify-center py-8">
+                <svg className="animate-spin h-8 w-8 text-blue-500" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" /></svg>
+              </div>
+            ) : error ? (
+              <div className="text-red-600 dark:text-red-400">{error}</div>
+            ) : (
+              <div className="whitespace-pre-line text-neutral-800 dark:text-neutral-100 text-base">{summary}</div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 } 
