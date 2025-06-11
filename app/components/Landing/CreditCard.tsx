@@ -86,6 +86,7 @@ export default function CreditCardCard({ card }: { card: CreditCard }) {
              
         </div>
       </div>
+      
       {/* Modal for AI summary */}
       {showModal && (
         <div className={`fixed inset-0 z-50 flex items-center justify-center  ${isDark ? 'bg-black/40 text-white' : 'bg-white/40 text-black'}`}>

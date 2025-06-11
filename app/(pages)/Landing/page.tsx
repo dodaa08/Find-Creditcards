@@ -28,6 +28,12 @@ export default function LandingPage() {
     const [resultMessage, setResultMessage] = useState("");
     const [aiCardResult, setAiCardResult] = useState<CreditCard | null>(null);
 
+    // Comparison modal state
+    const [showCompareModal, setShowCompareModal] = useState(false);
+    const [selectedCompareIds, setSelectedCompareIds] = useState<string[]>([]);
+    const [compareResult, setCompareResult] = useState("");
+    const [compareLoading, setCompareLoading] = useState(false);
+
     // Handlers
     const handleBankChange = (bank: string) => {
         setSelectedBanks(prev => prev.includes(bank) ? prev.filter(b => b !== bank) : [...prev, bank]);
@@ -119,6 +125,25 @@ export default function LandingPage() {
         }
     }
 
+    // Handler for AI comparison
+    async function handleCompare() {
+        setCompareLoading(true);
+        setCompareResult("");
+        try {
+            const response = await fetch("/api/compare-cards", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ cardIds: selectedCompareIds })
+            });
+            const data = await response.json();
+            setCompareResult(data.result);
+        } catch (e) {
+            setCompareResult("There was an error contacting Gemini for comparison.");
+        } finally {
+            setCompareLoading(false);
+        }
+    }
+
     useEffect(() => setMounted(true), []);  
     if (!mounted) return null;
     return (
@@ -184,6 +209,15 @@ export default function LandingPage() {
                 {/* Main content */}
                 <div className="flex-1">
                     <HeroSection onQuerySubmit={handleQuerySubmit} isLoading={isLoading} resultMessage={resultMessage} />
+                    <div className="w-full max-w-5xl mx-auto text-center mb-2">
+                      <button
+                        className="text-blue-500 border border-blue-300 bg-white hover:bg-blue-50 hover:underline text-sm font-medium rounded px-4 py-2 transition"
+                        onClick={() => setShowCompareModal(true)}
+                        type="button"
+                      >
+                        Advanced AI Comparison
+                      </button>
+                    </div>
                     {isLoading ? null : aiCardResult ? (
                         <div className="w-full max-w-5xl mx-auto mb-4">
                             <div className="rounded-lg p-4 mb-2 text-blue-900 dark:text-blue-100 font-semibold flex items-center justify-between">
@@ -211,6 +245,51 @@ export default function LandingPage() {
                     )}
                 </div>
             </div>
+            {/* Comparison Modal */}
+            {showCompareModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+                    <div className={` rounded-lg shadow-xl max-w-xl w-full p-6 relative max-h-[80vh] overflow-y-auto ${isDark ? 'bg-black/90 text-white' : 'bg-white text-black'}`}>
+                        <button
+                            className="absolute top-2 right-2 text-2xl text-neutral-500 hover:text-neutral-800 dark:hover:text-white"
+                            onClick={() => { setShowCompareModal(false); setSelectedCompareIds([]); setCompareResult(""); }}
+                            aria-label="Close"
+                        >
+                            &times;
+                        </button>
+                        <h2 className="text-xl font-bold mb-4">Select Cards to Compare</h2>
+                        <div className="mb-4 space-y-2">
+                            {filteredCards.slice(0, 6).map(card => (
+                                <label key={card.id} className={`flex items-center gap-2 ${isDark ? 'text-white' : 'text-black'}`}> 
+                                    <input
+                                        type="checkbox"
+                                        checked={selectedCompareIds.includes(card.id)}
+                                        onChange={e => {
+                                            if (e.target.checked) {
+                                                setSelectedCompareIds(prev => [...prev, card.id]);
+                                            } else {
+                                                setSelectedCompareIds(prev => prev.filter(id => id !== card.id));
+                                            }
+                                        }}
+                                    />
+                                    {card.name}
+                                </label>
+                            ))}
+                        </div>
+                        <button
+                            className="mt-2 px-4 py-2 rounded bg-blue-600 text-white font-semibold hover:bg-blue-700 transition disabled:opacity-50"
+                            onClick={handleCompare}
+                            disabled={selectedCompareIds.length < 2 || compareLoading}
+                        >
+                            {compareLoading ? 'Comparing...' : 'Compare'}
+                        </button>
+                        {compareResult && (
+                            <div className={`mt-4 p-4 rounded whitespace-pre-line ${isDark ? 'bg-blue-900 text-blue-100' : 'bg-blue-100 text-blue-900'}`}> 
+                                {compareResult}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
         </div>
     )
 }   
