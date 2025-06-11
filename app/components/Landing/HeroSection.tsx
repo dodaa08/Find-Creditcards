@@ -17,9 +17,9 @@ export default function HeroSection() {
   const isDark = theme === "dark";
   if (!mounted) return null;
   return (
-    <section className={`flex flex-col items-center text-center py-16 px-4 transition-colors duration-300 h-screen ${isDark ? 'bg-neutral-900 text-white' : 'bg-white text-black'}`}>
+    <section className={`flex flex-col items-center text-center py-16 px-4 transition-colors duration-300 ${isDark ? 'bg-neutral-900 text-white' : 'bg-white text-black'}`}>
       <h1 className="text-4xl md:text-5xl font-extrabold mb-4">
-        AI-Powered Card <span className="text-blue-500">Discovery</span>
+        AI-Powered Credit Card <span className="text-blue-500">Discovery</span>
       </h1>
       <form className="w-full max-w-2xl flex items-center gap-2 mb-6">
         <input
