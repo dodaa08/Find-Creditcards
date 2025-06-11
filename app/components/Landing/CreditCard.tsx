@@ -7,12 +7,14 @@ export default function CreditCardCard({ card }: { card: CreditCard }) {
   const { theme } = useTheme();
   const isDark = theme === "dark";
   const [showModal, setShowModal] = React.useState(false);
+  const [modalType, setModalType] = React.useState<'summary' | 'benefits' | 'basics' | null>(null);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [summary, setSummary] = React.useState("");
 
   const handleViewDetails = async () => {
     setShowModal(true);
+    setModalType('summary');
     setLoading(true);
     setError(null);
     setSummary("");
@@ -28,13 +30,22 @@ export default function CreditCardCard({ card }: { card: CreditCard }) {
         throw new Error("Network response was not ok");
       }
       const data = await response.json();
-      console.log("Summary response:", data);
       setSummary(data.summary);
     } catch (e) {
       setError("An error occurred while fetching the summary.");
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleViewBenefits = () => {
+    setShowModal(true);
+    setModalType('benefits');
+  };
+
+  const handleViewBasics = () => {
+    setShowModal(true);
+    setModalType('basics');
   };
 
   return (
@@ -66,10 +77,13 @@ export default function CreditCardCard({ card }: { card: CreditCard }) {
           <span>{card.loungeAccess ? 'Lounge Access' : ''}</span>
         </div>
         <div className="flex items-center justify-between bottom-0 text-xs text-white/80">
+        <button className="bg-white text-black px-4 py-2 rounded-md cursor-pointer mb-2" onClick={handleViewBasics}>Basics</button>
+             
+             <button className="bg-white text-black px-4 py-2 rounded-md cursor-pointer mb-2" onClick={handleViewBenefits}>Benefits</button>
              <button className="bg-white text-black px-4 py-2 rounded-md cursor-pointer mb-2" onClick={handleViewDetails}>
                 View Details
              </button>
-             <button className="bg-white text-black px-4 py-2 rounded-md cursor-pointer mb-2">Visit Bank</button>
+             
         </div>
       </div>
       {/* Modal for AI summary */}
@@ -83,15 +97,41 @@ export default function CreditCardCard({ card }: { card: CreditCard }) {
             >
               &times;
             </button>
-            <h2 className="text-xl font-bold mb-4">{card.name} Summary</h2>
-            {loading ? (
-              <div className="flex items-center justify-center py-8">
-                <svg className="animate-spin h-8 w-8 text-blue-500" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" /></svg>
+            <h2 className="text-xl font-bold mb-4">{card.name} {modalType === 'summary' ? 'Summary' : modalType === 'benefits' ? 'Benefits' : 'Basics'}</h2>
+            {modalType === 'summary' ? (
+              loading ? (
+                <div className="flex items-center justify-center py-8">
+                  <svg className="animate-spin h-8 w-8 text-blue-500" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" /></svg>
+                </div>
+              ) : error ? (
+                <div className="text-red-600 dark:text-red-400">{error}</div>
+              ) : (
+                <div className="whitespace-pre-line text-neutral-800 dark:text-neutral-100 text-base mb-4">{summary}</div>
+              )
+            ) : modalType === 'benefits' ? (
+              <div>
+                <ul className="list-disc pl-5 text-neutral-800 dark:text-neutral-100">
+                  {card.benefits.map((benefit, idx) => (
+                    <li key={idx}>{benefit}</li>
+                  ))}
+                </ul>
               </div>
-            ) : error ? (
-              <div className="text-red-600 dark:text-red-400">{error}</div>
             ) : (
-              <div className="whitespace-pre-line text-neutral-800 dark:text-neutral-100 text-base">{summary}</div>
+              <div className="space-y-2 text-neutral-800 dark:text-neutral-100 text-sm">
+                <div><strong>Name:</strong> {card.name}</div>
+                <div><strong>Bank:</strong> {card.bank}</div>
+                <div><strong>Type:</strong> {card.type}</div>
+                <div><strong>Annual Fee:</strong> {card.annualFee > 0 ? `₹${card.annualFee}/yr` : 'Free'}</div>
+                <div><strong>Joining Fee:</strong> {card.joiningFee > 0 ? `₹${card.joiningFee}` : 'Free'}</div>
+                <div><strong>Reward Rate:</strong> {card.rewardRate}</div>
+                <div><strong>Welcome Bonus:</strong> {card.welcomeBonus}</div>
+                <div><strong>Lounge Access:</strong> {card.loungeAccess ? 'Yes' : 'No'}</div>
+                <div><strong>Fuel Surcharge:</strong> {card.fuelSurcharge ? 'Yes' : 'No'}</div>
+                <div><strong>Min. Salary:</strong> {card.minSalary ? `₹${card.minSalary}` : 'N/A'}</div>
+                <div><strong>Categories:</strong> {card.categories.join(', ')}</div>
+                <div><strong>Rating:</strong> {card.rating}</div>
+                <div><strong>Description:</strong> {card.description}</div>
+              </div>
             )}
           </div>
         </div>
