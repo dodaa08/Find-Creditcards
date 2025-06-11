@@ -5,9 +5,6 @@ import { useTheme } from "next-themes";
 const suggestions = [
   "Show me cards that offer lounge access and high cashback",
   "Best credit cards for first-time users with no annual fee",
-  "Compare Axis Magnus vs HDFC Regalia with benefits summary",
-  "Cards with highest reward points for online shopping",
-  "Premium cards under ₹10,000 annual fee with travel benefits"
 ];
 
 export default function HeroSection() {
@@ -19,7 +16,7 @@ export default function HeroSection() {
   return (
     <section className={`flex flex-col items-center text-center py-16 px-4 transition-colors duration-300 ${isDark ? 'bg-neutral-900 text-white' : 'bg-white text-black'}`}>
       <h1 className="text-4xl md:text-5xl font-extrabold mb-4">
-        AI-Powered Credit Card <span className="text-blue-500">Discovery</span>
+        Find Credit Cards <span className="text-blue-500">using AI</span>
       </h1>
       <form className="w-full max-w-2xl flex items-center gap-2 mb-6">
         <input
@@ -39,7 +36,7 @@ export default function HeroSection() {
       </form>
       <div className="w-full max-w-2xl text-left">
         <div className={`mb-2 font-medium ${isDark ? 'text-neutral-300' : 'text-neutral-600'}`}>Try these sample queries:</div>
-        <div className="flex flex-col gap-2">
+        <div className="flex gap-2 mt-2">
           {suggestions.map((s, i) => (
             <button
               key={i}
