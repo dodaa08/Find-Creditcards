@@ -5,6 +5,7 @@ import { useTheme } from "next-themes";
 import CreditCardList from "@/app/components/Landing/CreditCardList"
 import SidebarFilter from "@/app/components/Landing/SidebarFilter";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { creditCardsData, CreditCard } from "@/app/Data/data";
 
 export default function LandingPage() {
     const [mounted, setMounted] = useState(false);
@@ -12,7 +13,82 @@ export default function LandingPage() {
     const isDark = theme === "dark";
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-    useEffect(() => setMounted(true), []);
+
+    // Filter state
+    const [search, setSearch] = useState("");
+    const [selectedBanks, setSelectedBanks] = useState<string[]>([]);
+    const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
+    const [selectedFees, setSelectedFees] = useState<string[]>([]);
+    const [selectedSalaries, setSelectedSalaries] = useState<string[]>([]);
+    const [selectedFeatures, setSelectedFeatures] = useState<string[]>([]);
+    const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+
+    // Handlers
+    const handleBankChange = (bank: string) => {
+        setSelectedBanks(prev => prev.includes(bank) ? prev.filter(b => b !== bank) : [...prev, bank]);
+    };
+    const handleTypeChange = (type: string) => {
+        setSelectedTypes(prev => prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type]);
+    };
+    const handleFeeChange = (fee: string) => {
+        setSelectedFees(prev => prev.includes(fee) ? prev.filter(f => f !== fee) : [...prev, fee]);
+    };
+    const handleSalaryChange = (salary: string) => {
+        setSelectedSalaries(prev => prev.includes(salary) ? prev.filter(s => s !== salary) : [...prev, salary]);
+    };
+    const handleFeatureChange = (feature: string) => {
+        setSelectedFeatures(prev => prev.includes(feature) ? prev.filter(f => f !== feature) : [...prev, feature]);
+    };
+    const handleCategoryChange = (category: string) => {
+        setSelectedCategories(prev => prev.includes(category) ? prev.filter(c => c !== category) : [...prev, category]);
+    };
+
+    // Filtering logic
+    const filteredCards = creditCardsData.filter(card => {
+        // Search
+        const matchesSearch = search.trim() === "" ||
+            card.name.toLowerCase().includes(search.toLowerCase()) ||
+            card.bank.toLowerCase().includes(search.toLowerCase()) ||
+            card.type.toLowerCase().includes(search.toLowerCase());
+        // Banks
+        const matchesBank = selectedBanks.length === 0 || selectedBanks.includes(card.bank);
+        // Types
+        const matchesType = selectedTypes.length === 0 || selectedTypes.includes(card.type) || selectedTypes.includes(card.type.charAt(0).toUpperCase() + card.type.slice(1));
+        // Fees
+        let matchesFee = true;
+        if (selectedFees.length > 0) {
+            matchesFee = false;
+            for (const fee of selectedFees) {
+                if (fee === "No Annual Fee" && card.annualFee === 0) matchesFee = true;
+                if (fee === "₹500 - ₹1000" && card.annualFee >= 500 && card.annualFee <= 1000) matchesFee = true;
+                if (fee === "₹1000+" && card.annualFee > 1000) matchesFee = true;
+            }
+        }
+        // Salary
+        let matchesSalary = true;
+        if (selectedSalaries.length > 0) {
+            matchesSalary = false;
+            for (const sal of selectedSalaries) {
+                if (sal === "₹25,000+" && card.minSalary >= 25000) matchesSalary = true;
+                if (sal === "₹50,000+" && card.minSalary >= 50000) matchesSalary = true;
+            }
+        }
+        // Features
+        let matchesFeature = true;
+        if (selectedFeatures.length > 0) {
+            matchesFeature = false;
+            for (const feature of selectedFeatures) {
+                if (feature === "Lounge Access" && card.loungeAccess) matchesFeature = true;
+                if (feature === "Cashback" && card.categories.map(c => c.toLowerCase()).includes("cashback")) matchesFeature = true;
+                if (feature === "Travel" && card.categories.map(c => c.toLowerCase()).includes("travel")) matchesFeature = true;
+            }
+        }
+        // Categories
+        const matchesCategory = selectedCategories.length === 0 || selectedCategories.some(cat => card.categories.map(c => c.toLowerCase()).includes(cat.toLowerCase()));
+        return matchesSearch && matchesBank && matchesType && matchesFee && matchesSalary && matchesFeature && matchesCategory;
+    });
+
+    useEffect(() => setMounted(true), []);  
     if (!mounted) return null;
     return (
         <div className={`${isDark ? 'bg-neutral-900 text-white' : 'bg-white text-black'} min-h-screen`}>  
@@ -26,28 +102,59 @@ export default function LandingPage() {
             </div>
             <div className="flex flex-row">
                 {/* Sidebar: visible on md+, overlay on mobile */}
-                <div className={`hidden md:flex flex-col transition-all duration-300 ${sidebarCollapsed ? 'w-28' : 'w-72'} max-w-full`}>
-                    <div className="flex items-center justify-between p-4 border-b border-neutral-200 dark:border-neutral-800">
-                        {/* <h2 className="text-xl font-semibold truncate">Filters</h2> */}
-                        <button onClick={() => setSidebarCollapsed(!sidebarCollapsed)} className="p-2 rounded dark:hover:bg-neutral-800 cursor-pointer flex items-center justify-center gap-2 ">
-                            {sidebarCollapsed ? <div className='flex gap-2'> Filters <FiChevronRight size={20} /> </div> : <div className='flex gap-2'> Filters <FiChevronLeft size={20} /> </div>}
+                <div className={`hidden md:flex flex-col transition-all duration-300 ${sidebarCollapsed ? 'w-16' : 'w-72'} max-w-full`}>
+                    <div className="flex items-center justify-between p-4 border-b border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900">
+                        <h2 className="text-xl font-semibold truncate">Filters</h2>
+                        <button onClick={() => setSidebarCollapsed(!sidebarCollapsed)} className="p-2 rounded dark:hover:bg-neutral-800">
+                        Filters 
+                            {sidebarCollapsed ? <> <FiChevronRight size={24} /> </> : <FiChevronLeft size={24} />}
                         </button>
                     </div>
-                    <div className={`${sidebarCollapsed ? 'hidden' : 'block'}`}>
-                        <SidebarFilter />
+                    <div className={`${sidebarCollapsed ? 'hidden' : 'block'}`}> 
+                        <SidebarFilter
+                            search={search}
+                            onSearchChange={setSearch}
+                            selectedBanks={selectedBanks}
+                            onBankChange={handleBankChange}
+                            selectedTypes={selectedTypes}
+                            onTypeChange={handleTypeChange}
+                            selectedFees={selectedFees}
+                            onFeeChange={handleFeeChange}
+                            selectedSalaries={selectedSalaries}
+                            onSalaryChange={handleSalaryChange}
+                            selectedFeatures={selectedFeatures}
+                            onFeatureChange={handleFeatureChange}
+                            selectedCategories={selectedCategories}
+                            onCategoryChange={handleCategoryChange}
+                        />
                     </div>
                 </div>
-
                 {sidebarOpen && (
                     <div className="fixed inset-0 z-50 flex">
                         <div className="absolute inset-0 bg-black/40" onClick={() => setSidebarOpen(false)} />
-                        <SidebarFilter onClose={() => setSidebarOpen(false)} />
+                        <SidebarFilter
+                            search={search}
+                            onSearchChange={setSearch}
+                            selectedBanks={selectedBanks}
+                            onBankChange={handleBankChange}
+                            selectedTypes={selectedTypes}
+                            onTypeChange={handleTypeChange}
+                            selectedFees={selectedFees}
+                            onFeeChange={handleFeeChange}
+                            selectedSalaries={selectedSalaries}
+                            onSalaryChange={handleSalaryChange}
+                            selectedFeatures={selectedFeatures}
+                            onFeatureChange={handleFeatureChange}
+                            selectedCategories={selectedCategories}
+                            onCategoryChange={handleCategoryChange}
+                            onClose={() => setSidebarOpen(false)}
+                        />
                     </div>
                 )}
                 {/* Main content */}
                 <div className="flex-1">
                     <HeroSection />
-                    <CreditCardList />
+                    <CreditCardList cards={filteredCards} />
                 </div>
             </div>
         </div>

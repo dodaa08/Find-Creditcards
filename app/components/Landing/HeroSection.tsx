@@ -3,8 +3,8 @@ import React, { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 
 const suggestions = [
-  "Show me cards that offer lounge access and high cashback",
-  "Best credit cards for first-time users with no annual fee",
+  "' Show me cards that offer lounge access and high cashback '",
+  "' Best credit cards for first-time users with no annual fee '",
 ];
 
 export default function HeroSection() {

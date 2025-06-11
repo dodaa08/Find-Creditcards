@@ -1,8 +1,52 @@
 import React from 'react';
+import { useTheme } from 'next-themes';
 
-const SidebarFilter = ({ onClose }: { onClose?: () => void }) => {
+interface SidebarFilterProps {
+  search: string;
+  onSearchChange: (value: string) => void;
+  selectedBanks: string[];
+  onBankChange: (bank: string) => void;
+  selectedTypes: string[];
+  onTypeChange: (type: string) => void;
+  selectedFees: string[];
+  onFeeChange: (fee: string) => void;
+  selectedSalaries: string[];
+  onSalaryChange: (salary: string) => void;
+  selectedFeatures: string[];
+  onFeatureChange: (feature: string) => void;
+  selectedCategories: string[];
+  onCategoryChange: (category: string) => void;
+  onClose?: () => void;
+}
+
+const banks = ["HDFC", "ICICI", "SBI", "Axis Bank", "Citi Bank", "Standard Chartered", "State Bank of India"];
+const types = ["Credit", "Debit", "entry-level", "mid-tier", "premium"];
+const fees = ["No Annual Fee", "₹500 - ₹1000", "₹1000+"];
+const salaries = ["₹25,000+", "₹50,000+"];
+const features = ["Lounge Access", "Cashback", "Travel"];
+const categories = ["Shopping", "Dining", "Fuel", "Online Shopping", "Bill Payments", "Grocery", "Movies & OTT", "EMI Offers", "Lifestyle"];
+
+const SidebarFilter = ({
+  search,
+  onSearchChange,
+  selectedBanks,
+  onBankChange,
+  selectedTypes,
+  onTypeChange,
+  selectedFees,
+  onFeeChange,
+  selectedSalaries,
+  onSalaryChange,
+  selectedFeatures,
+  onFeatureChange,
+  selectedCategories,
+  onCategoryChange,
+  onClose
+}: SidebarFilterProps) => {
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
   return (
-    <aside className="w-72 max-w-full bg-white dark:bg-neutral-900 border-r border-neutral-200 dark:border-neutral-800 h-full p-6 flex flex-col gap-6 shadow-lg z-40">
+    <aside className={`w-72 max-w-full bg-white dark:bg-neutral-900 border-r border-neutral-200 dark:border-neutral-800 h-full p-6 flex flex-col gap-6 shadow-lg z-40 transition-colors duration-300 ${isDark ? 'bg-neutral-900 text-white' : 'bg-white text-black'}`}>
       <div className="flex justify-between items-center mb-4">
         {/* <h2 className="text-xl font-semibold">Filters</h2> */}
         {onClose && (
@@ -17,59 +61,63 @@ const SidebarFilter = ({ onClose }: { onClose?: () => void }) => {
         <input
           type="text"
           placeholder="Search cards..."
-          className="w-full px-3 py-2 rounded border border-neutral-300 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 text-sm focus:outline-none "
+          value={search}
+          onChange={e => onSearchChange(e.target.value)}
+          className="w-full px-3 py-2 rounded border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-sm text-black dark:text-white focus:outline-none  transition-colors duration-300"
         />
       </div>
       {/* Bank Filter */}
       <div>
         <h3 className="font-medium mb-2">Banks</h3>
         <div className="flex flex-col gap-1">
-          <label><input type="checkbox" /> HDFC</label>
-          <label><input type="checkbox" /> ICICI</label>
-          <label><input type="checkbox" /> SBI</label>
+          {banks.map(bank => (
+            <label key={bank}><input type="checkbox" checked={selectedBanks.includes(bank)} onChange={() => onBankChange(bank)} /> {bank}</label>
+          ))}
         </div>
       </div>
       {/* Card Type Filter */}
       <div>
         <h3 className="font-medium mb-2">Card Type</h3>
         <div className="flex flex-col gap-1">
-          <label><input type="checkbox" /> Credit</label>
-          <label><input type="checkbox" /> Debit</label>
+          {types.map(type => (
+            <label key={type}><input type="checkbox" checked={selectedTypes.includes(type)} onChange={() => onTypeChange(type)} /> {type}</label>
+          ))}
         </div>
       </div>
       {/* Fee Range Filter */}
       <div>
         <h3 className="font-medium mb-2">Fee Range</h3>
         <div className="flex flex-col gap-1">
-          <label><input type="checkbox" /> No Annual Fee</label>
-          <label><input type="checkbox" /> ₹500 - ₹1000</label>
-          <label><input type="checkbox" /> ₹1000+</label>
+          {fees.map(fee => (
+            <label key={fee}><input type="checkbox" checked={selectedFees.includes(fee)} onChange={() => onFeeChange(fee)} /> {fee}</label>
+          ))}
         </div>
       </div>
       {/* Salary Filter */}
       <div>
         <h3 className="font-medium mb-2">Min. Salary</h3>
         <div className="flex flex-col gap-1">
-          <label><input type="checkbox" /> ₹25,000+</label>
-          <label><input type="checkbox" /> ₹50,000+</label>
+          {salaries.map(sal => (
+            <label key={sal}><input type="checkbox" checked={selectedSalaries.includes(sal)} onChange={() => onSalaryChange(sal)} /> {sal}</label>
+          ))}
         </div>
       </div>
       {/* Features Filter */}
       <div>
         <h3 className="font-medium mb-2">Features</h3>
         <div className="flex flex-col gap-1">
-          <label><input type="checkbox" /> Lounge Access</label>
-          <label><input type="checkbox" /> Cashback</label>
-          <label><input type="checkbox" /> Travel</label>
+          {features.map(feature => (
+            <label key={feature}><input type="checkbox" checked={selectedFeatures.includes(feature)} onChange={() => onFeatureChange(feature)} /> {feature}</label>
+          ))}
         </div>
       </div>
       {/* Categories Filter */}
       <div>
         <h3 className="font-medium mb-2">Categories</h3>
         <div className="flex flex-col gap-1">
-          <label><input type="checkbox" /> Shopping</label>
-          <label><input type="checkbox" /> Dining</label>
-          <label><input type="checkbox" /> Fuel</label>
+          {categories.map(cat => (
+            <label key={cat}><input type="checkbox" checked={selectedCategories.includes(cat)} onChange={() => onCategoryChange(cat)} /> {cat}</label>
+          ))}
         </div>
       </div>
     </aside>
