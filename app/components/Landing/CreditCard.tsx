@@ -88,8 +88,8 @@ export default function CreditCardCard({ card }: { card: CreditCard }) {
       </div>
       {/* Modal for AI summary */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="bg-white dark:bg-neutral-900 rounded-lg shadow-xl max-w-lg w-full p-6 relative max-h-[80vh] overflow-y-auto">
+        <div className={`fixed inset-0 z-50 flex items-center justify-center  ${isDark ? 'bg-black/40 text-white' : 'bg-white/40 text-black'}`}>
+          <div className={`  rounded-lg shadow-xl max-w-lg w-full p-6 relative max-h-[80vh] overflow-y-auto ${isDark ? 'bg-black/90 text-white' : 'bg-white text-gray-900'}`}>
             <button
               className="absolute top-2 right-2 text-2xl text-neutral-500 hover:text-neutral-800 dark:hover:text-white"
               onClick={() => setShowModal(false)}
@@ -106,18 +106,18 @@ export default function CreditCardCard({ card }: { card: CreditCard }) {
               ) : error ? (
                 <div className="text-red-600 dark:text-red-400">{error}</div>
               ) : (
-                <div className="whitespace-pre-line text-neutral-800 dark:text-neutral-100 text-base mb-4">{summary}</div>
+                <div className={`whitespace-pre-line text-base mb-4 ${isDark ? 'text-white' : 'text-black'}`}>{summary}</div>
               )
             ) : modalType === 'benefits' ? (
-              <div>
-                <ul className="list-disc pl-5 text-neutral-800 dark:text-neutral-100">
+              <div className={`space-y-2 text-sm ${isDark ? 'text-white' : 'text-black'}`}>
+                <ul className="list-disc pl-5">
                   {card.benefits.map((benefit, idx) => (
                     <li key={idx}>{benefit}</li>
                   ))}
                 </ul>
               </div>
             ) : (
-              <div className="space-y-2 text-neutral-800 dark:text-neutral-100 text-sm">
+              <div className={`space-y-2 text-sm ${isDark ? 'text-white' : 'text-black'}`}>
                 <div><strong>Name:</strong> {card.name}</div>
                 <div><strong>Bank:</strong> {card.bank}</div>
                 <div><strong>Type:</strong> {card.type}</div>
