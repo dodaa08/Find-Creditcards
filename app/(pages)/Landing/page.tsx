@@ -98,15 +98,14 @@ export default function LandingPage() {
                     <svg width="28" height="28" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
                     <span className="sr-only">Open sidebar</span>
                 </button>
-                <span className="ml-3 text-lg font-semibold">Filters</span>
             </div>
             <div className="flex flex-row">
                 {/* Sidebar: visible on md+, overlay on mobile */}
-                <div className={`hidden md:flex flex-col transition-all duration-300 ${sidebarCollapsed ? 'w-16' : 'w-72'} max-w-full`}>
+                <div className={`hidden md:flex flex-col transition-all duration-300 ${sidebarCollapsed ? 'w-20' : 'w-72'} max-w-full`}>
+                            <h1 className='text-xl font-semibold flex items-center gap-2 mt-4 ml-2'>Filters</h1>
                     <div className="flex items-center justify-between p-4 border-b border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900">
-                        <h2 className="text-xl font-semibold truncate">Filters</h2>
-                        <button onClick={() => setSidebarCollapsed(!sidebarCollapsed)} className="p-2 rounded dark:hover:bg-neutral-800">
-                        Filters 
+                        
+                        <button onClick={() => setSidebarCollapsed(!sidebarCollapsed)} className="p-2 rounded dark:hover:bg-neutral-800 items-center gap-2 cursor-pointer">
                             {sidebarCollapsed ? <> <FiChevronRight size={24} /> </> : <FiChevronLeft size={24} />}
                         </button>
                     </div>
@@ -154,7 +153,12 @@ export default function LandingPage() {
                 {/* Main content */}
                 <div className="flex-1">
                     <HeroSection />
-                    <CreditCardList cards={filteredCards} />
+                    <CreditCardList cards={filteredCards.slice(0, 6)} />
+                    {filteredCards.length > 6 && (
+                        <div className="w-full max-w-5xl mx-auto text-center text-sm text-neutral-500 pb-8">
+                            +{filteredCards.length - 6} more cards
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

@@ -34,8 +34,8 @@ export default function Header() {
               </svg>
             )}
           </button>
-          <button className={`rounded-md px-4 py-2 cursor-pointer text-sm font-medium transition-colors ${isDark ? 'bg-white text-black hover:bg-neutral-200' : 'bg-black text-white hover:bg-neutral-800'}`}>
-            Explore Cards
+          <button className={`ml-2 rounded-md px-4 py-2 cursor-pointer text-sm font-medium transition-colors ${isDark ? 'bg-white text-black hover:bg-neutral-200' : 'bg-black text-white hover:bg-neutral-800'}`}>
+            Explore All Cards
           </button>
         </div>
       </div>
