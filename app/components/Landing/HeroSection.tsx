@@ -1,5 +1,5 @@
 "use client"
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 
 const suggestions = [
@@ -12,7 +12,10 @@ const suggestions = [
 
 export default function HeroSection() {
   const { theme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
   const isDark = theme === "dark";
+  if (!mounted) return null;
   return (
     <section className={`flex flex-col items-center text-center py-16 px-4 transition-colors duration-300 h-screen ${isDark ? 'bg-neutral-900 text-white' : 'bg-white text-black'}`}>
       <h1 className="text-4xl md:text-5xl font-extrabold mb-4">

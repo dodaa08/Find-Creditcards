@@ -1,3 +1,4 @@
+
 import Landing from "./(pages)/Landing/page"
 
 export default function(){
