@@ -92,7 +92,7 @@ export default function CreditCardCard({ card }: { card: CreditCard }) {
         <div className={`fixed inset-0 z-50 flex items-center justify-center  ${isDark ? 'bg-black/40 text-white' : 'bg-white/40 text-black'}`}>
           <div className={`  rounded-lg shadow-xl max-w-lg w-full p-6 relative max-h-[80vh] overflow-y-auto ${isDark ? 'bg-black/90 text-white' : 'bg-white text-gray-900'}`}>
             <button
-              className="absolute top-2 right-2 text-2xl text-neutral-500 hover:text-neutral-800 dark:hover:text-white"
+              className="absolute top-2 cursor-pointer right-2 text-2xl text-neutral-500 hover:text-neutral-800 dark:hover:text-white"
               onClick={() => setShowModal(false)}
               aria-label="Close"
             >

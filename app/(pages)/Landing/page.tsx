@@ -261,7 +261,7 @@ export default function LandingPage() {
                             {showAllCards && (
                                 <div className="w-full max-w-5xl mx-auto flex justify-end mb-2">
                                     <button
-                                        className="text-2xl text-neutral-500 hover:text-neutral-800 dark:hover:text-white px-2 py-1 rounded"
+                                        className="text-2xl cursor-pointer text-neutral-500 hover:text-neutral-800 dark:hover:text-white px-2 py-1 rounded"
                                         onClick={handleHideAllCards}
                                         aria-label="Show fewer cards"
                                     >
@@ -284,7 +284,7 @@ export default function LandingPage() {
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
                     <div className={` rounded-lg shadow-xl max-w-xl w-full p-6 relative max-h-[80vh] overflow-y-auto ${isDark ? 'bg-black/90 text-white' : 'bg-white text-black'}`}>
                         <button
-                            className="absolute top-2 right-2 text-2xl text-neutral-500 hover:text-neutral-800 dark:hover:text-white"
+                            className="absolute top-2 right-2 cursor-pointer text-2xl text-neutral-500 hover:text-neutral-800 dark:hover:text-white"
                             onClick={() => { setShowCompareModal(false); setSelectedCompareIds([]); setCompareResult(""); }}
                             aria-label="Close"
                         >
