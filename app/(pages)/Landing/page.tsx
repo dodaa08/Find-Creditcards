@@ -8,12 +8,13 @@ import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { creditCardsData, CreditCard } from "@/app/Data/data";
 import Header from "@/app/components/Landing/Header";
 
+
 export default function LandingPage() {
     const [mounted, setMounted] = useState(false);
     const { theme } = useTheme();
     const isDark = theme === "dark";
     const [sidebarOpen, setSidebarOpen] = useState(false);
-    const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+    const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
 
     // Filter state
     const [search, setSearch] = useState("");
