@@ -17,10 +17,8 @@ Cardify is a modern, responsive web app built with Next.js and React that helps 
 
 ## 📺 Demo
 
-<!--
-[![Watch the demo](https://img.youtube.com/vi/XXXXXXXXXXX/maxresdefault.jpg)](https://youtu.be/XXXXXXXXXXX)
--->
-*Demo video coming soon!*
+
+[![Watch the demo](https://shorturl.at/vkJa9)
 
 ---
 
