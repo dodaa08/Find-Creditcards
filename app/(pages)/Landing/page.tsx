@@ -211,11 +211,11 @@ export default function LandingPage() {
                     <HeroSection onQuerySubmit={handleQuerySubmit} isLoading={isLoading} resultMessage={resultMessage} />
                     <div className="w-full max-w-5xl mx-auto text-center mb-2">
                       <button
-                        className="text-blue-500 border border-blue-300 bg-white hover:bg-blue-50 hover:underline text-sm font-medium rounded px-4 py-2 transition"
+                        className={`text-lg cursor-pointer  hover:bg-gray-800 text-sm font-medium rounded-lg px-4 py-2 transition duration-300 ${isDark ? 'bg-neutral-900 text-blue-400' : 'bg-white text-blue-400'}`}
                         onClick={() => setShowCompareModal(true)}
                         type="button"
                       >
-                        Advanced AI Comparison
+                        Advanced AI Based Comparison →
                       </button>
                     </div>
                     {isLoading ? null : aiCardResult ? (
