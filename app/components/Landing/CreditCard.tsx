@@ -13,6 +13,7 @@ function stripMarkdown(text: string) {
     .trim();
 }
 
+
 export default function CreditCardCard({ card }: { card: CreditCard }) {
   const { theme } = useTheme();
   const isDark = theme === "dark";

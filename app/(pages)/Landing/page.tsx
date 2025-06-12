@@ -8,7 +8,15 @@ import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { creditCardsData, CreditCard } from "@/app/Data/data";
 import Header from "@/app/components/Landing/Header";
 
-
+// Utility to strip markdown formatting and leading bullet chars
+function stripMarkdown(text: string) {
+  return text
+    .replace(/^\s*([*-]|•)\s*/, '')
+    .replace(/\*\*|__|\*|_/g, '')
+    .replace(/`/g, '')
+    .replace(/\[|\]|\(|\)/g, '')
+    .trim();
+}
 
 export default function LandingPage() {
     const [mounted, setMounted] = useState(false);
@@ -324,8 +332,77 @@ export default function LandingPage() {
                             {compareLoading ? 'Comparing...' : 'Compare'}
                         </button>
                         {compareResult && (
-                            <div className={`mt-4 p-4 rounded whitespace-pre-line ${isDark ? 'bg-blue-900 text-blue-100' : 'bg-blue-100 text-blue-900'}`}> 
-                                {compareResult}
+                            <div className="mt-4">
+                                {(() => {
+                                    const lines = compareResult.trim().split(/\r?\n/);
+                                    const tableLines = lines.filter(l => l.trim().startsWith('|'));
+                                    const nonTableLines = lines.filter(l => !l.trim().startsWith('|') && l.trim() !== '');
+                                    // Table rendering
+                                    let table = null;
+                                    if (tableLines.length >= 2) {
+                                        const headers = tableLines[0].split('|').map(h => stripMarkdown(h.trim())).filter(Boolean);
+                                        const rows = tableLines.slice(2).map(row => row.split('|').map(cell => stripMarkdown(cell.trim())).filter(Boolean));
+                                        table = (
+                                            <div className="overflow-x-auto">
+                                                <table className={`min-w-full text-sm md:text-base border rounded overflow-hidden mb-4 ${isDark ? 'border-neutral-700' : 'border-neutral-200'}`}>
+                                                    <thead>
+                                                        <tr>
+                                                            {headers.map((h, i) => (
+                                                                <th key={i} className={`font-bold px-4 py-2 ${isDark ? 'bg-neutral-900 text-neutral-100' : 'bg-neutral-50 text-neutral-800'}`}>{h}</th>
+                                                            ))}
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {rows.map((row, i) => (
+                                                            <tr key={i} className={`${isDark ? 'border-b border-neutral-800' : 'border-b border-neutral-100'}`}>
+                                                                {row.map((cell, j) => (
+                                                                    <td key={j} className={`px-4 py-2 ${isDark ? 'text-white bg-neutral-800' : 'text-neutral-900 bg-white'}`}>{cell}</td>
+                                                                ))}
+                                                            </tr>
+                                                        ))}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        );
+                                    }
+                                    // Short summary (first ~50 words after table)
+                                    let summary = null;
+                                    if (nonTableLines.length > 0) {
+                                        const text = nonTableLines.join(' ');
+                                        const words = text.split(/\s+/).slice(0, 50).join(' ');
+                                        summary = (
+                                            <div className={`mt-2 text-base ${isDark ? 'text-blue-200' : 'text-blue-900'}`}>{words}{text.split(/\s+/).length > 50 ? '...' : ''}</div>
+                                        );
+                                    }
+                                    if (table) {
+                                        return <>{table}{summary}</>;
+                                    }
+                                    // Fallback: key-value or bullet rendering
+                                    return (
+                                        <table className={`min-w-full text-sm md:text-base border rounded overflow-hidden ${isDark ? 'border-neutral-700' : 'border-neutral-200'}`}>
+                                            <tbody>
+                                                {compareResult.split(/\n|\r/).filter(Boolean).map((line, idx) => {
+                                                    const cleanLine = stripMarkdown(line);
+                                                    const [key, ...rest] = cleanLine.split(":");
+                                                    if (rest.length > 0) {
+                                                        return (
+                                                            <tr key={idx} className={`${isDark ? 'border-b border-neutral-800' : 'border-b border-neutral-100'}`}>
+                                                                <td className={`font-semibold pr-4 py-2 whitespace-nowrap ${isDark ? 'text-neutral-100 bg-neutral-900' : 'text-neutral-800 bg-neutral-50'}`}>{key.trim()}</td>
+                                                                <td className={`py-2 pl-2 ${isDark ? 'text-white bg-neutral-800' : 'text-neutral-900 bg-white'}`}>{rest.join(":").trim()}</td>
+                                                            </tr>
+                                                        );
+                                                    } else {
+                                                        return (
+                                                            <tr key={idx} className={`${isDark ? 'border-b border-neutral-800' : 'border-b border-neutral-100'}`}>
+                                                                <td className={`py-2 px-4 ${isDark ? 'text-white bg-neutral-800' : 'text-neutral-900 bg-white'}`} colSpan={2}>{cleanLine}</td>
+                                                            </tr>
+                                                        );
+                                                    }
+                                                })}
+                                            </tbody>
+                                        </table>
+                                    );
+                                })()}
                             </div>
                         )}
                     </div>
