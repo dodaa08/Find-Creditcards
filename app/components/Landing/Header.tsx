@@ -3,8 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useTheme } from "next-themes";
 import { LuMoon } from "react-icons/lu";
 import { FaGithub } from "react-icons/fa";
-import { FaVideo } from "react-icons/fa";
-
+import Link from 'next/link';
 
 
 export default function Header({ onExploreAllCards }: { onExploreAllCards?: () => void }) {
@@ -43,6 +42,13 @@ export default function Header({ onExploreAllCards }: { onExploreAllCards?: () =
           >
             Explore All Cards
           </button>
+        </div>
+        <div className='flex items-center gap-5 ml-10'>
+          <Link href="https://github.com/dodaa08/Find-Creditcards" target='_blank'>
+          <button className={`text-2xl cursor-pointer rounded-full p-2 ${isDark ? 'border-2 border-gray-800' : 'border-2 border-gray-100'}`}>
+            <FaGithub />
+          </button>
+          </Link>
         </div>
       </div>
     </nav>
