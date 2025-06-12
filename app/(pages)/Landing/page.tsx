@@ -27,7 +27,7 @@ export default function LandingPage() {
     // Gemini AI integration state
     const [isLoading, setIsLoading] = useState(false);
     const [resultMessage, setResultMessage] = useState("");
-    const [aiCardResult, setAiCardResult] = useState<CreditCard | null>(null);
+    const [aiCardResults, setAiCardResults] = useState<CreditCard[]>([]);
 
     // Comparison modal state
     const [showCompareModal, setShowCompareModal] = useState(false);
@@ -109,7 +109,7 @@ export default function LandingPage() {
     async function handleQuerySubmit(query: string) {
         setIsLoading(true);
         setResultMessage("");
-        setAiCardResult(null);
+        setAiCardResults([]);
         try {
             const response = await fetch("/api/gemini", {
                 method: "POST",
@@ -117,12 +117,17 @@ export default function LandingPage() {
                 body: JSON.stringify({ query })
             });
             const data = await response.json();
-            if (data.cardName) {
+            if (data.cardNames && Array.isArray(data.cardNames)) {
+                const foundCards = creditCardsData.filter(card => data.cardNames.includes(card.name));
+                setAiCardResults(foundCards);
+                setResultMessage(data.message);
+            } else if (data.cardName) {
                 const found = creditCardsData.find(card => card.name === data.cardName);
-                setAiCardResult(found || null);
+                setAiCardResults(found ? [found] : []);
                 setResultMessage(data.message);
             } else {
                 setResultMessage(data.message);
+                setAiCardResults([]);
             }
         } catch (e) {
             setResultMessage("There was an error contacting Gemini. Please try again.");
@@ -241,19 +246,19 @@ export default function LandingPage() {
                       </button>
                     </div>
                     {/* Show all cards logic */}
-                    {isLoading ? null : aiCardResult ? (
+                    {isLoading ? null : aiCardResults.length > 0 ? (
                         <div className="w-full max-w-5xl mx-auto mb-4">
                             <div className="rounded-lg p-4 mb-2 text-blue-900 dark:text-blue-100 font-semibold flex items-center justify-between">
                                 <span className={`text-lg ${isDark ? 'text-white' : 'text-black'}`}>AI Recommendation:</span>
                                 <button
                                     className="ml-4 px-3 py-2 rounded bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-200 text-xs font-semibold hover:bg-red-200 dark:hover:bg-red-800 transition cursor-pointer text-2xl"
-                                    onClick={() => { setAiCardResult(null); setResultMessage(""); }}
+                                    onClick={() => { setAiCardResults([]); setResultMessage(""); }}
                                 >
                                     Clear Response
                                 </button>
                             </div>
                             <div className="mb-4">
-                                <CreditCardList cards={[aiCardResult]} />
+                                <CreditCardList cards={aiCardResults} />
                             </div>
                         </div>
                     ) : (

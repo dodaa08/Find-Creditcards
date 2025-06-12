@@ -31,13 +31,16 @@ Respond with the best matching card's name (exact), or if no match, reply with a
   const data = await response.json();
   const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
 
-  // Try to extract a card name from the response
-  const found = creditCardsData.find(card =>
+  // Try to extract all matching card names from the response
+  const foundCards = creditCardsData.filter(card =>
     text.toLowerCase().includes(card.name.toLowerCase())
   );
 
   return NextResponse.json({
-    cardName: found ? found.name : null,
-    message: found ? `Best match: ${found.name}` : text || "No suitable card found."
+    cardNames: foundCards.map(card => card.name),
+    cardName: foundCards[0]?.name || null, // for backward compatibility
+    message: foundCards.length > 0
+      ? `Best matches: ${foundCards.map(card => card.name).join(", ")}`
+      : text || "No suitable card found."
   });
 } 
