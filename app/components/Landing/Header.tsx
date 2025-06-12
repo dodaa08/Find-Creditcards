@@ -2,6 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import { useTheme } from "next-themes";
 import { LuMoon } from "react-icons/lu";
+import { FaGithub } from "react-icons/fa";
+import { FaVideo } from "react-icons/fa";
+
 
 
 export default function Header({ onExploreAllCards }: { onExploreAllCards?: () => void }) {

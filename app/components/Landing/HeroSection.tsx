@@ -59,7 +59,7 @@ export default function HeroSection({ onQuerySubmit, isLoading, resultMessage }:
           {suggestions.map((s, i) => (
             <button
               key={i}
-              className={`w-full text-left rounded-md px-4 py-3 transition-colors text-sm md:text-base ${isDark ? 'bg-neutral-800 hover:bg-neutral-700 text-neutral-200' : 'bg-neutral-100 hover:bg-neutral-200 text-neutral-800'}`}
+              className={`w-full text-left cursor-pointer rounded-md px-4 py-3 transition-colors text-sm md:text-base ${isDark ? 'bg-neutral-800 hover:bg-neutral-700 text-neutral-200' : 'bg-neutral-100 hover:bg-neutral-200 text-neutral-800'}`}
               type="button"
               onClick={() => onQuerySubmit(s.replace(/'/g, ""))}
             >

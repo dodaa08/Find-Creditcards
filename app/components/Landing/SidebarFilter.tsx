@@ -19,12 +19,12 @@ interface SidebarFilterProps {
   onClose?: () => void;
 }
 
-const banks = ["HDFC", "ICICI", "SBI", "Axis Bank", "Citi Bank", "Standard Chartered", "State Bank of India"];
-const types = ["Credit", "Debit", "entry-level", "mid-tier", "premium"];
+const banks = ["Axis Bank", "Citi Bank", "HDFC", "Standard Chartered", "State Bank of India"];
+const types = ["entry-level", "mid-tier", "premium"];
 const fees = ["No Annual Fee", "₹500 - ₹1000", "₹1000+"];
 const salaries = ["₹25,000+", "₹50,000+"];
 const features = ["Lounge Access", "Cashback", "Travel"];
-const categories = ["Shopping", "Dining", "Fuel", "Online Shopping", "Bill Payments", "Grocery", "Movies & OTT", "EMI Offers", "Lifestyle"];
+const categories = ["Shopping", "Dining", "Fuel", "Bill Payments", "EMI Offers"];
 
 const SidebarFilter = ({
   search,
