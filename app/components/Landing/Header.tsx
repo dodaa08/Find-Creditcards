@@ -4,7 +4,7 @@ import { useTheme } from "next-themes";
 import { LuMoon } from "react-icons/lu";
 
 
-export default function Header() {
+export default function Header({ onExploreAllCards }: { onExploreAllCards?: () => void }) {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
@@ -34,7 +34,10 @@ export default function Header() {
               </svg>
             )}
           </button>
-          <button className={`ml-2 rounded-md px-4 py-2 cursor-pointer text-sm font-medium transition-colors ${isDark ? 'bg-white text-black hover:bg-neutral-200' : 'bg-black text-white hover:bg-neutral-800'}`}>
+          <button
+            className={`ml-2 rounded-md px-4 py-2 cursor-pointer text-sm font-medium transition-colors ${isDark ? 'bg-white text-black hover:bg-neutral-200' : 'bg-black text-white hover:bg-neutral-800'}`}
+            onClick={onExploreAllCards}
+          >
             Explore All Cards
           </button>
         </div>

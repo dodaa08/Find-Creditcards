@@ -46,7 +46,7 @@ const SidebarFilter = ({
   const { theme } = useTheme();
   const isDark = theme === "dark";
   return (
-    <aside className={`w-72 max-w-full  border-r border-neutral-200 dark:border-neutral-800 h-full p-6 flex flex-col gap-6 shadow-lg z-40 transition-colors duration-300 ${isDark ? 'bg-neutral-900 text-white' : 'bg-white text-black'}`}>
+    <aside className={`w-72 max-w-full  h-full p-6 flex flex-col gap-6 shadow-lg z-40 transition-colors duration-300 ${isDark ? 'bg-neutral-900 text-white border-r border-neutral-800' : 'bg-white text-black border-r border-neutral-200'}`}>
       <div className="flex justify-between items-center mb-4">
         {/* <h2 className="text-xl font-semibold">Filters</h2> */}
         {onClose && (

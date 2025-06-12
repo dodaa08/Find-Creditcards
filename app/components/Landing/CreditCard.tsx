@@ -49,7 +49,7 @@ export default function CreditCardCard({ card }: { card: CreditCard }) {
   };
 
   return (
-    <div className="relative  w-full max-w-xs aspect-[16/10] rounded-2xl shadow-xl overflow-auto h-64 border border-neutral-200 dark:border-neutral-800 mx-auto " style={{ background: isDark ? card.color :  card.color }}>
+    <div className="relative  w-full max-w-xs aspect-[16/10] rounded-2xl shadow-xl overflow-auto h-64  dark:border-neutral-800 mx-auto " style={{ background: isDark ? card.color :  card.color }}>
       {/* Glass overlay */}
       <div className="absolute inset-0 bg-white/10 dark:bg-black/30 backdrop-blur-md z-0" />
       {/* Card content */}

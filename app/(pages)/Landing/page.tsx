@@ -6,6 +6,7 @@ import CreditCardList from "@/app/components/Landing/CreditCardList"
 import SidebarFilter from "@/app/components/Landing/SidebarFilter";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { creditCardsData, CreditCard } from "@/app/Data/data";
+import Header from "@/app/components/Landing/Header";
 
 export default function LandingPage() {
     const [mounted, setMounted] = useState(false);
@@ -33,6 +34,11 @@ export default function LandingPage() {
     const [selectedCompareIds, setSelectedCompareIds] = useState<string[]>([]);
     const [compareResult, setCompareResult] = useState("");
     const [compareLoading, setCompareLoading] = useState(false);
+
+    // Show all cards toggle
+    const [showAllCards, setShowAllCards] = useState(false);
+
+    const cardListRef = React.useRef<HTMLDivElement>(null);
 
     // Handlers
     const handleBankChange = (bank: string) => {
@@ -144,10 +150,25 @@ export default function LandingPage() {
         }
     }
 
+    // Handler for Explore All Cards
+    const handleExploreAllCards = () => {
+        setShowAllCards(true);
+        setTimeout(() => {
+            cardListRef.current?.scrollIntoView({ behavior: 'smooth' });
+        }, 100); // wait for render
+    };
+
+    // Handler for cross button
+    const handleHideAllCards = () => {
+        setShowAllCards(false);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
     useEffect(() => setMounted(true), []);  
     if (!mounted) return null;
     return (
         <div className={`${isDark ? 'bg-neutral-900 text-white' : 'bg-white text-black'} min-h-screen`}>  
+            <Header onExploreAllCards={handleExploreAllCards} />
             {/* Hamburger menu for mobile */}
             <div className="md:hidden flex items-center p-4 border-b border-neutral-200 dark:border-neutral-800">
                 <button onClick={() => setSidebarOpen(true)} className="p-2 rounded hover:bg-neutral-100 dark:hover:bg-neutral-800">
@@ -158,7 +179,7 @@ export default function LandingPage() {
             <div className="flex flex-row">
                 {/* Sidebar: visible on md+, overlay on mobile */}
                 <div className={`hidden md:flex flex-col transition-all duration-300 ${sidebarCollapsed ? 'w-20' : 'w-72'} max-w-full`}>
-                    <div className={`flex items-center justify-between p-4  ${isDark ? 'bg-neutral-900 border-b border-neutral-900' : 'bg-white  border-b border-neutral-200'}`}>
+                    <div className={`flex items-center justify-between p-4  ${isDark ? 'bg-neutral-900 border-b border-neutral-900' : 'bg-white '}`}>
                         
                         <button onClick={() => setSidebarCollapsed(!sidebarCollapsed)} className={`p-2 rounded  items-center gap-2 cursor-pointer  ${isDark ? 'bg-neutral-900 border-2 border-neutral-900 dark:border-neutral-800' : 'bg-white border-2 border-neutral-200'}`}>
                             {sidebarCollapsed ? <> <FiChevronRight size={24} /> </> : <FiChevronLeft size={24} />}
@@ -209,15 +230,17 @@ export default function LandingPage() {
                 {/* Main content */}
                 <div className="flex-1">
                     <HeroSection onQuerySubmit={handleQuerySubmit} isLoading={isLoading} resultMessage={resultMessage} />
+                    <div ref={cardListRef} />
                     <div className="w-full max-w-5xl mx-auto text-center mb-2">
                       <button
-                        className={`text-lg cursor-pointer  hover:bg-gray-800 text-sm font-medium rounded-lg px-4 py-2 transition duration-300 ${isDark ? 'bg-neutral-900 text-blue-400' : 'bg-white text-blue-400'}`}
+                        className={`text-lg cursor-pointer   text-sm font-medium rounded-lg px-4 py-2 transition duration-300 ${isDark ? 'bg-neutral-900 text-blue-400 hover:bg-gray-800' : 'bg-white text-blue-400 hover:bg-gray-200'}`}
                         onClick={() => setShowCompareModal(true)}
                         type="button"
                       >
                         Advanced AI Based Comparison →
                       </button>
                     </div>
+                    {/* Show all cards logic */}
                     {isLoading ? null : aiCardResult ? (
                         <div className="w-full max-w-5xl mx-auto mb-4">
                             <div className="rounded-lg p-4 mb-2 text-blue-900 dark:text-blue-100 font-semibold flex items-center justify-between">
@@ -235,8 +258,19 @@ export default function LandingPage() {
                         </div>
                     ) : (
                         <>
-                            <CreditCardList cards={filteredCards.slice(0, 6)} />
-                            {filteredCards.length > 6 && (
+                            {showAllCards && (
+                                <div className="w-full max-w-5xl mx-auto flex justify-end mb-2">
+                                    <button
+                                        className="text-2xl text-neutral-500 hover:text-neutral-800 dark:hover:text-white px-2 py-1 rounded"
+                                        onClick={handleHideAllCards}
+                                        aria-label="Show fewer cards"
+                                    >
+                                        &times;
+                                    </button>
+                                </div>
+                            )}
+                            <CreditCardList cards={showAllCards ? filteredCards : filteredCards.slice(0, 6)} />
+                            {!showAllCards && filteredCards.length > 6 && (
                                 <div className="w-full max-w-5xl mx-auto text-center text-sm text-neutral-500 pb-8">
                                     +{filteredCards.length - 6} more cards
                                 </div>
