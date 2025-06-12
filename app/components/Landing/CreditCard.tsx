@@ -174,28 +174,80 @@ export default function CreditCardCard({ card }: { card: CreditCard }) {
                 </div>
               )
             ) : modalType === 'benefits' ? (
-              <div className={`space-y-2 text-sm ${isDark ? 'text-white' : 'text-black'}`}>
-                <ul className="list-disc pl-5">
-                  {card.benefits.map((benefit, idx) => (
-                    <li key={idx}>{benefit}</li>
-                  ))}
-                </ul>
+              <div className="mb-4">
+                <table className={`min-w-full text-sm md:text-base border rounded overflow-hidden ${isDark ? 'border-neutral-700' : 'border-neutral-200'}`}>
+                  <thead>
+                    <tr>
+                      <th className={`font-bold px-4 py-2 ${isDark ? 'bg-neutral-900 text-neutral-100' : 'bg-neutral-50 text-neutral-800'}`}>Benefit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {card.benefits.map((benefit, idx) => (
+                      <tr key={idx} className={`${isDark ? 'border-b border-neutral-800' : 'border-b border-neutral-100'}`}>
+                        <td className={`px-4 py-2 ${isDark ? 'text-white bg-neutral-800' : 'text-neutral-900 bg-white'}`}>{benefit}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             ) : (
-              <div className={`space-y-2 text-sm ${isDark ? 'text-white' : 'text-black'}`}>
-                <div><strong>Name:</strong> {card.name}</div>
-                <div><strong>Bank:</strong> {card.bank}</div>
-                <div><strong>Type:</strong> {card.type}</div>
-                <div><strong>Annual Fee:</strong> {card.annualFee > 0 ? `₹${card.annualFee}/yr` : 'Free'}</div>
-                <div><strong>Joining Fee:</strong> {card.joiningFee > 0 ? `₹${card.joiningFee}` : 'Free'}</div>
-                <div><strong>Reward Rate:</strong> {card.rewardRate}</div>
-                <div><strong>Welcome Bonus:</strong> {card.welcomeBonus}</div>
-                <div><strong>Lounge Access:</strong> {card.loungeAccess ? 'Yes' : 'No'}</div>
-                <div><strong>Fuel Surcharge:</strong> {card.fuelSurcharge ? 'Yes' : 'No'}</div>
-                <div><strong>Min. Salary:</strong> {card.minSalary ? `₹${card.minSalary}` : 'N/A'}</div>
-                <div><strong>Categories:</strong> {card.categories.join(', ')}</div>
-                <div><strong>Rating:</strong> {card.rating}</div>
-                <div><strong>Description:</strong> {card.description}</div>
+              <div className="mb-4">
+                <table className={`min-w-full text-sm md:text-base border rounded overflow-hidden ${isDark ? 'border-neutral-700' : 'border-neutral-200'}`}>
+                  <tbody>
+                    <tr className={`${isDark ? 'border-b border-neutral-800' : 'border-b border-neutral-100'}`}>
+                      <td className={`font-semibold pr-4 py-2 whitespace-nowrap ${isDark ? 'text-neutral-100 bg-neutral-900' : 'text-neutral-800 bg-neutral-50'}`}>Name</td>
+                      <td className={`py-2 pl-2 ${isDark ? 'text-white bg-neutral-800' : 'text-neutral-900 bg-white'}`}>{card.name}</td>
+                    </tr>
+                    <tr className={`${isDark ? 'border-b border-neutral-800' : 'border-b border-neutral-100'}`}>
+                      <td className={`font-semibold pr-4 py-2 whitespace-nowrap ${isDark ? 'text-neutral-100 bg-neutral-900' : 'text-neutral-800 bg-neutral-50'}`}>Bank</td>
+                      <td className={`py-2 pl-2 ${isDark ? 'text-white bg-neutral-800' : 'text-neutral-900 bg-white'}`}>{card.bank}</td>
+                    </tr>
+                    <tr className={`${isDark ? 'border-b border-neutral-800' : 'border-b border-neutral-100'}`}>
+                      <td className={`font-semibold pr-4 py-2 whitespace-nowrap ${isDark ? 'text-neutral-100 bg-neutral-900' : 'text-neutral-800 bg-neutral-50'}`}>Type</td>
+                      <td className={`py-2 pl-2 ${isDark ? 'text-white bg-neutral-800' : 'text-neutral-900 bg-white'}`}>{card.type}</td>
+                    </tr>
+                    <tr className={`${isDark ? 'border-b border-neutral-800' : 'border-b border-neutral-100'}`}>
+                      <td className={`font-semibold pr-4 py-2 whitespace-nowrap ${isDark ? 'text-neutral-100 bg-neutral-900' : 'text-neutral-800 bg-neutral-50'}`}>Annual Fee</td>
+                      <td className={`py-2 pl-2 ${isDark ? 'text-white bg-neutral-800' : 'text-neutral-900 bg-white'}`}>{card.annualFee > 0 ? `₹${card.annualFee}/yr` : 'Free'}</td>
+                    </tr>
+                    <tr className={`${isDark ? 'border-b border-neutral-800' : 'border-b border-neutral-100'}`}>
+                      <td className={`font-semibold pr-4 py-2 whitespace-nowrap ${isDark ? 'text-neutral-100 bg-neutral-900' : 'text-neutral-800 bg-neutral-50'}`}>Joining Fee</td>
+                      <td className={`py-2 pl-2 ${isDark ? 'text-white bg-neutral-800' : 'text-neutral-900 bg-white'}`}>{card.joiningFee > 0 ? `₹${card.joiningFee}` : 'Free'}</td>
+                    </tr>
+                    <tr className={`${isDark ? 'border-b border-neutral-800' : 'border-b border-neutral-100'}`}>
+                      <td className={`font-semibold pr-4 py-2 whitespace-nowrap ${isDark ? 'text-neutral-100 bg-neutral-900' : 'text-neutral-800 bg-neutral-50'}`}>Reward Rate</td>
+                      <td className={`py-2 pl-2 ${isDark ? 'text-white bg-neutral-800' : 'text-neutral-900 bg-white'}`}>{card.rewardRate}</td>
+                    </tr>
+                    <tr className={`${isDark ? 'border-b border-neutral-800' : 'border-b border-neutral-100'}`}>
+                      <td className={`font-semibold pr-4 py-2 whitespace-nowrap ${isDark ? 'text-neutral-100 bg-neutral-900' : 'text-neutral-800 bg-neutral-50'}`}>Welcome Bonus</td>
+                      <td className={`py-2 pl-2 ${isDark ? 'text-white bg-neutral-800' : 'text-neutral-900 bg-white'}`}>{card.welcomeBonus}</td>
+                    </tr>
+                    <tr className={`${isDark ? 'border-b border-neutral-800' : 'border-b border-neutral-100'}`}>
+                      <td className={`font-semibold pr-4 py-2 whitespace-nowrap ${isDark ? 'text-neutral-100 bg-neutral-900' : 'text-neutral-800 bg-neutral-50'}`}>Lounge Access</td>
+                      <td className={`py-2 pl-2 ${isDark ? 'text-white bg-neutral-800' : 'text-neutral-900 bg-white'}`}>{card.loungeAccess ? 'Yes' : 'No'}</td>
+                    </tr>
+                    <tr className={`${isDark ? 'border-b border-neutral-800' : 'border-b border-neutral-100'}`}>
+                      <td className={`font-semibold pr-4 py-2 whitespace-nowrap ${isDark ? 'text-neutral-100 bg-neutral-900' : 'text-neutral-800 bg-neutral-50'}`}>Fuel Surcharge</td>
+                      <td className={`py-2 pl-2 ${isDark ? 'text-white bg-neutral-800' : 'text-neutral-900 bg-white'}`}>{card.fuelSurcharge ? 'Yes' : 'No'}</td>
+                    </tr>
+                    <tr className={`${isDark ? 'border-b border-neutral-800' : 'border-b border-neutral-100'}`}>
+                      <td className={`font-semibold pr-4 py-2 whitespace-nowrap ${isDark ? 'text-neutral-100 bg-neutral-900' : 'text-neutral-800 bg-neutral-50'}`}>Min. Salary</td>
+                      <td className={`py-2 pl-2 ${isDark ? 'text-white bg-neutral-800' : 'text-neutral-900 bg-white'}`}>{card.minSalary ? `₹${card.minSalary}` : 'N/A'}</td>
+                    </tr>
+                    <tr className={`${isDark ? 'border-b border-neutral-800' : 'border-b border-neutral-100'}`}>
+                      <td className={`font-semibold pr-4 py-2 whitespace-nowrap ${isDark ? 'text-neutral-100 bg-neutral-900' : 'text-neutral-800 bg-neutral-50'}`}>Categories</td>
+                      <td className={`py-2 pl-2 ${isDark ? 'text-white bg-neutral-800' : 'text-neutral-900 bg-white'}`}>{card.categories.join(', ')}</td>
+                    </tr>
+                    <tr className={`${isDark ? 'border-b border-neutral-800' : 'border-b border-neutral-100'}`}>
+                      <td className={`font-semibold pr-4 py-2 whitespace-nowrap ${isDark ? 'text-neutral-100 bg-neutral-900' : 'text-neutral-800 bg-neutral-50'}`}>Rating</td>
+                      <td className={`py-2 pl-2 ${isDark ? 'text-white bg-neutral-800' : 'text-neutral-900 bg-white'}`}>{card.rating}</td>
+                    </tr>
+                    <tr className={`${isDark ? 'border-b border-neutral-800' : 'border-b border-neutral-100'}`}>
+                      <td className={`font-semibold pr-4 py-2 whitespace-nowrap ${isDark ? 'text-neutral-100 bg-neutral-900' : 'text-neutral-800 bg-neutral-50'}`}>Description</td>
+                      <td className={`py-2 pl-2 ${isDark ? 'text-white bg-neutral-800' : 'text-neutral-900 bg-white'}`}>{card.description}</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             )}
           </div>
