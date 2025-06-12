@@ -21,8 +21,8 @@ export default function HeroSection({ onQuerySubmit, isLoading, resultMessage }:
   const isDark = theme === "dark";
   if (!mounted) return null;
   return (
-    <section className={`flex flex-col items-center text-center py-16 px-4 transition-colors duration-300 ${isDark ? 'bg-neutral-900 text-white' : 'bg-white text-black'}`}>
-      <h1 className="text-4xl md:text-5xl font-extrabold mb-4">
+    <section className={`flex flex-col items-center text-center py-12 px-4 transition-colors duration-300 ${isDark ? 'bg-neutral-900 text-white' : 'bg-white text-black'}`}>
+      <h1 className="text-3xl md:text-4xl font-extrabold mb-4">
         Find Credit Cards <span className="text-blue-500">using AI</span>
       </h1>
       <form className="w-full max-w-2xl flex items-center gap-2 mb-6" onSubmit={e => { e.preventDefault(); onQuerySubmit(input); }}>

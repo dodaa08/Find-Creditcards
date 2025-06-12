@@ -187,7 +187,7 @@ export default function LandingPage() {
                 <div className={`hidden md:flex flex-col transition-all duration-300 ${sidebarCollapsed ? 'w-20' : 'w-72'} max-w-full`}>
                     <div className={`flex items-center justify-between p-4  ${isDark ? 'bg-neutral-900 border-b border-neutral-900' : 'bg-white '}`}>
                         
-                        <button onClick={() => setSidebarCollapsed(!sidebarCollapsed)} className={`p-2 rounded  items-center gap-2 cursor-pointer  ${isDark ? 'bg-neutral-900 border-2 border-neutral-900 dark:border-neutral-800' : 'bg-white border-2 border-neutral-200'}`}>
+                        <button onClick={() => setSidebarCollapsed(!sidebarCollapsed)} className={`p-2 rounded  items-center gap-2 cursor-pointer  ${isDark ? 'bg-neutral-900 border-2 hover:border-neutral-800 border-neutral-900' : 'bg-white border-2 hover:border-neutral-200 border-neutral-100'}`}>
                             {sidebarCollapsed ? <> <FiChevronRight size={24} /> </> : <FiChevronLeft size={24} />}
                         </button>
                     </div>

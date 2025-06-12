@@ -14,7 +14,7 @@ export default function Header({ onExploreAllCards }: { onExploreAllCards?: () =
   if (!mounted) return null;
   return (
     <nav className={`w-full border-b transition-colors duration-300 ${isDark ? 'bg-neutral-900 border-neutral-800' : 'bg-white border-neutral-200'}`}>
-      <div className="max-w-6xl mx-auto flex items-center justify-between h-16 px-6">
+      <div className="max-w-6xl mx-auto flex items-center justify-between h-14 px-4">
         {/* Logo/Brand */}
         <span className={`font-semibold text-2xl ${isDark ? 'text-white' : 'text-black'}`}>Cardify</span>
         {/* Centered nav (empty for now, but space reserved for future) */}
