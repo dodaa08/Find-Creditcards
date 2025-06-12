@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ summary: "Card not found." }, { status: 404 });
   }
 
-  const prompt = `Write a detailed, user-friendly summary for this credit card, highlighting its best features, who it's best for, and any important caveats. Be concise but informative.\n\nCARD DATA:\n${JSON.stringify(card, null, 2)}`;
+  const prompt = `Summarize this credit card in 4-6 short, clear bullet points or as a markdown table. Focus on the most important features, who it's best for, and any key caveats. Do NOT write a paragraph.\n\nCARD DATA:\n${JSON.stringify(card, null, 2)}`;
 
   const response = await fetch(GEMINI_API_URL, {
     method: "POST",

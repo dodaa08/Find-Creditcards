@@ -9,6 +9,7 @@ import { creditCardsData, CreditCard } from "@/app/Data/data";
 import Header from "@/app/components/Landing/Header";
 
 
+
 export default function LandingPage() {
     const [mounted, setMounted] = useState(false);
     const { theme } = useTheme();

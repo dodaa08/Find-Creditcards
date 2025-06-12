@@ -3,6 +3,16 @@ import React from "react";
 import { CreditCard } from "@/app/Data/data";
 import { useTheme } from "next-themes";
 
+// Utility to strip markdown formatting and leading bullet chars
+function stripMarkdown(text: string) {
+  return text
+    .replace(/^\s*([*-]|•)\s*/, '') // remove leading bullet or dash
+    .replace(/\*\*|__|\*|_/g, '') // remove bold/italic
+    .replace(/`/g, '') // remove code
+    .replace(/\[|\]|\(|\)/g, '') // remove brackets/parentheses
+    .trim();
+}
+
 export default function CreditCardCard({ card }: { card: CreditCard }) {
   const { theme } = useTheme();
   const isDark = theme === "dark";
@@ -81,7 +91,7 @@ export default function CreditCardCard({ card }: { card: CreditCard }) {
              
              <button className="bg-white text-black px-4 py-2 rounded-md cursor-pointer mb-2" onClick={handleViewBenefits}>Benefits</button>
              <button className="bg-white text-black px-4 py-2 rounded-md cursor-pointer mb-2" onClick={handleViewDetails}>
-                View Details
+                AI Summary
              </button>
              
         </div>
@@ -107,7 +117,61 @@ export default function CreditCardCard({ card }: { card: CreditCard }) {
               ) : error ? (
                 <div className="text-red-600 dark:text-red-400">{error}</div>
               ) : (
-                <div className={`whitespace-pre-line text-base mb-4 ${isDark ? 'text-white' : 'text-black'}`}>{summary}</div>
+                <div className="mb-4">
+                  {summary.trim().startsWith('|') ? (
+                    // Markdown table rendering
+                    (() => {
+                      const lines = summary.trim().split(/\r?\n/).filter(l => l.trim().startsWith('|'));
+                      if (lines.length < 2) return null;
+                      const headers = lines[0].split('|').map(h => h.trim()).filter(Boolean);
+                      const rows = lines.slice(2).map(row => row.split('|').map(cell => cell.trim()).filter(Boolean));
+                      return (
+                        <table className={`min-w-full text-sm md:text-base border rounded overflow-hidden ${isDark ? 'border-neutral-700' : 'border-neutral-200'}`}>
+                          <thead>
+                            <tr>
+                              {headers.map((h, i) => (
+                                <th key={i} className={`font-bold px-4 py-2 ${isDark ? 'bg-neutral-900 text-neutral-100' : 'bg-neutral-50 text-neutral-800'}`}>{h}</th>
+                              ))}
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {rows.map((row, i) => (
+                              <tr key={i} className={`${isDark ? 'border-b border-neutral-800' : 'border-b border-neutral-100'}`}>
+                                {row.map((cell, j) => (
+                                  <td key={j} className={`px-4 py-2 ${isDark ? 'text-white bg-neutral-800' : 'text-neutral-900 bg-white'}`}>{cell}</td>
+                                ))}
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      );
+                    })()
+                  ) : (
+                    // Fallback: key-value or bullet rendering
+                    <table className={`min-w-full text-sm md:text-base border rounded overflow-hidden ${isDark ? 'border-neutral-700' : 'border-neutral-200'}`}>
+                      <tbody>
+                        {summary.split(/\n|\r/).filter(Boolean).map((line, idx) => {
+                          const cleanLine = stripMarkdown(line);
+                          const [key, ...rest] = cleanLine.split(":");
+                          if (rest.length > 0) {
+                            return (
+                              <tr key={idx} className={`${isDark ? 'border-b border-neutral-800' : 'border-b border-neutral-100'}`}>
+                                <td className={`font-semibold pr-4 py-2 whitespace-nowrap ${isDark ? 'text-neutral-100 bg-neutral-900' : 'text-neutral-800 bg-neutral-50'}`}>{key.trim()}</td>
+                                <td className={`py-2 pl-2 ${isDark ? 'text-white bg-neutral-800' : 'text-neutral-900 bg-white'}`}>{rest.join(":").trim()}</td>
+                              </tr>
+                            );
+                          } else {
+                            return (
+                              <tr key={idx} className={`${isDark ? 'border-b border-neutral-800' : 'border-b border-neutral-100'}`}>
+                                <td className={`py-2 px-4 ${isDark ? 'text-white bg-neutral-800' : 'text-neutral-900 bg-white'}`} colSpan={2}>{cleanLine}</td>
+                              </tr>
+                            );
+                          }
+                        })}
+                      </tbody>
+                    </table>
+                  )}
+                </div>
               )
             ) : modalType === 'benefits' ? (
               <div className={`space-y-2 text-sm ${isDark ? 'text-white' : 'text-black'}`}>
